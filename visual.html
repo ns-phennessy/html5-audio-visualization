@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <style>
+            body{
+                padding:0;
+                margin:0;
+            }
+            canvas{
+                background: -webkit-radial-gradient(center, ellipse cover, #17446d 0%,#000000 100%);  
+            }
+        </style>
+    </head>
+    <body>
+        <audio controls>
+            <source src="ghostnstuff.mp3" type="audio/mp3">
+        </audio>
+
+        <canvas id="cvs" height="400" width="1280"></canvas>
+
+        <script src="js/jquery.min.js"></script>
+        <script>
+            
+            $('canvas').audioVisualizor($('audio')[0]);
+        </script>
+    </body>
+</html>
