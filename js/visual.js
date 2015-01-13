@@ -7,7 +7,12 @@
             width: canvasObj.width,
             height: canvasObj.height,
             gutter: 40,
-            fftSize: 2048
+            barSpacing:1,
+            barCount: 192,
+            barColor: '#fff',
+            shadowEnabled: true,
+            shadowColor: '#17446d',
+            shadowBlurRadius:50,
         }, options);
 
         $(canvasObj).on("resize", function(){
@@ -25,9 +30,10 @@
             if(src instanceof HTMLAudioElement)
                 return audioCtx.createMediaElementSource(src);
         })();
+
         sourceNode.connect(analyserNode);
         analyserNode.connect(audioCtx.destination);
-        analyserNode.fftSize = settings.fftSize;
+        analyserNode.fftSize = 2048;
 
         // Build audio data buffer
         var bufferLen = analyserNode.frequencyBinCount;
@@ -54,24 +60,24 @@
 
             canvasCtx.clearRect(0,0, settings.width, settings.height);
 
-            var barWidth = (settings.width / bufferLen) * 3;
+            var barWidth = (settings.width - (settings.gutter * 2) - (settings.barCount * settings.barSpacing)) / settings.barCount;
             var barHeight;
             var x = settings.gutter;
 
-            for(var i = 0; i < bufferLen; i++) {
+            for(var i = 0; i < settings.barCount; i++) {
                 barHeight = buffer[i]/3;
 
-                canvasCtx.fillStyle='#fff';
-                //canvasCtx.shadowBlur=50;
-                canvasCtx.shadowColor="#246bad";
-
+                canvasCtx.fillStyle = settings.barColor;
+                
+                if(settings.shadowEnabled){
+                    canvasCtx.shadowBlur = settings.shadowBlurRadius;
+                    canvasCtx.shadowColor = settings.shadowColor;
+                }
+                
                 if(barHeight > 0)
-                    canvasCtx.fillRoundRect(x, settings.height-barHeight - 100, barWidth, barHeight, barWidth/2);
+                    canvasCtx.fillRoundRect(x, settings.height-barHeight - 100, barWidth, barHeight, barWidth/3);
 
-                x += barWidth + 2;
-
-                if(x >= settings.width-settings.gutter)
-                    break;
+                x += barWidth + settings.barSpacing;
             }
         }, 50)
 
